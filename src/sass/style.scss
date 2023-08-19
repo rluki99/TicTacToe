@@ -1,0 +1,22 @@
+@use './mixins' as *;
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	font-size: 62.5%;
+	scroll-behavior: smooth;
+}
+
+body {
+	background-color: rgb(221, 221, 221);
+	font-family: 'Poppins', sans-serif;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
