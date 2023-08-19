@@ -15,8 +15,51 @@ html {
 
 body {
 	background-color: rgb(221, 221, 221);
-	font-family: 'Poppins', sans-serif;
+	font-family: 'Dancing Script', cursive;
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
+}
+
+.header {
+	margin-block: 30px;
+	&__text {
+		text-align: center;
+		font-size: 80px;
+		text-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.main {
+	margin-top: 30px;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.board {
+	display: grid;
+	grid-template-columns: repeat(3, 100px);
+	grid-template-rows: repeat(3, 100px);
+	gap: 8px;
+	&__cell {
+		border-top: 10px solid rgb(165, 71, 71);
+		border-right: 10px solid rgb(241, 136, 136);
+		background-color: rgb(255, 120, 120);
+		box-shadow: 10px 10px rgba(0, 0, 0, 0.1);
+		cursor: pointer;
+		transition: background-color 0.3s;
+
+		&:hover {
+			background-color: rgb(255, 101, 101);
+		}
+	}
+}
+
+.footer {
+	margin-bottom: 10px;
+	&__text {
+		text-align: center;
+		font-size: 20px;
+	}
 }
