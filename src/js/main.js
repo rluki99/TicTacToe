@@ -29,18 +29,17 @@ const gameController = () => {
 	const player1 = createPlayer('Player 1', 'X')
 	const player2 = createPlayer('Player 2', 'O')
 	let currentPlayer = player1
-	let gameActive = false
+	let gameEnded = false
 
 	const cells = document.querySelectorAll('.board__cell')
 
 	const startGame = () => {
-		gameActive = true
 		cells.forEach(cell => {
 			cell.textContent = ''
 		})
 		cells.forEach((cell, index) => {
 			cell.addEventListener('click', () => {
-				if (gameActive && gameBoard.makeMove(index, currentPlayer.symbol)) {
+				if (gameBoard.makeMove(index, currentPlayer.symbol)) {
 					cell.textContent = currentPlayer.symbol
 					if (checkWinner()) {
 						endGame(currentPlayer)
@@ -55,12 +54,13 @@ const gameController = () => {
 	}
 
 	const endGame = winner => {
-		gameActive = false
 		if (winner) {
 			console.log(`${winner.name} wins!`)
 		} else {
 			console.log(`It's a tie!`)
 		}
+		openModal()
+		gameEnded = true
 	}
 
 	const checkWinner = () => {
@@ -89,13 +89,39 @@ const gameController = () => {
 		return gameBoard.isBoardFull() && !checkWinner()
 	}
 
-	cells.forEach(cell => {
-		cell.addEventListener('click', () => {
-			if (!gameActive) {
-				startGame()
-			}
+	const resetGame = () => {
+		gameBoard.getBoard().fill('')
+		cells.forEach(cell => {
+			cell.textContent = ''
 		})
-	})
+		currentPlayer = player1
+		gameEnded = false
+		closeModal()
+	}
+
+	const resetButton = document.querySelector('.modal__reset')
+	resetButton.addEventListener('click', resetGame)
+
+	startGame()
 }
+
+const modalControler = () => {
+	const modal = document.querySelector('.modal')
+	const modalOverlay = document.querySelector('.modal-overlay')
+
+	const openModal = () => {
+		modal.classList.add('modal--active')
+		modalOverlay.classList.add('modal-overlay--active')
+	}
+
+	const closeModal = () => {
+		modal.classList.remove('modal--active')
+		modalOverlay.classList.remove('modal-overlay--active')
+	}
+
+	return { openModal, closeModal }
+}
+
+const { openModal, closeModal } = modalControler()
 
 gameController()

@@ -34,7 +34,9 @@ body {
 	margin-top: 30px;
 	flex: 1;
 	display: flex;
-	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 30px;
 }
 
 .board {
@@ -56,6 +58,58 @@ body {
 
 		&:hover {
 			background-color: rgb(255, 101, 101);
+		}
+	}
+}
+
+.modal-overlay {
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.2);
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+
+	&--active {
+		display: block;
+	}
+}
+
+.modal {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	align-items: flex-end;
+	justify-content: center;
+	padding-bottom: 200px;
+	transform: scale(0);
+	transition: transform 0.3s ease;
+
+	&--active {
+		transform: scale(1);
+	}
+
+	&__reset {
+		display: block;
+		width: 300px;
+		height: 80px;
+		font-size: 40px;
+		border: none;
+		border-top: 10px solid rgb(160, 160, 160);
+		border-right: 10px solid rgb(231, 231, 231);
+		background-color: rgb(243, 243, 243);
+		box-shadow: 10px 10px rgba(0, 0, 0, 0.1);
+		cursor: pointer;
+		transition: background-color 0.3s, text-shadow 0.3s;
+
+		&:hover {
+			background-color: rgb(226, 226, 226);
+			text-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 		}
 	}
 }
