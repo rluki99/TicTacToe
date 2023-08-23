@@ -62,6 +62,63 @@ body {
 	}
 }
 
+.togglers {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.toggler {
+	display: flex;
+	width: 230px;
+	padding: 6px;
+	border-radius: 100px;
+	background-color: rgb(255, 120, 120);
+	box-shadow: 10px 10px rgba(0, 0, 0, 0.1);
+
+	&__option {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		justify-content: center;
+		border-radius: 100px;
+		cursor: pointer;
+		transition: background-color 0.5s;
+
+		&:hover {
+			background-color: rgb(255, 120, 120);
+			background-color: transparent;
+		}
+
+		input:checked + .toggler__option-box {
+			width: 100%;
+			cursor: default;
+			background-color: white;
+			padding: 10px 28px;
+		}
+	}
+
+	&__option-input {
+		display: none;
+	}
+
+	&__option-box {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		border-radius: 100px;
+		transition: background-color 0.3s;
+	}
+
+	&__option-txt {
+		font-size: 22px;
+	}
+}
+
 .modal-overlay {
 	width: 100vw;
 	height: 100vh;
