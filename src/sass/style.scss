@@ -21,12 +21,24 @@ body {
 	flex-direction: column;
 }
 
+.no-scroll {
+	overflow: hidden;
+}
+
 .header {
 	margin-block: 30px;
+
+	@include view(small-mobile) {
+		margin-block: 10px;
+	}
+
 	&__text {
 		text-align: center;
 		font-size: 80px;
 		text-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+		@include view(small-mobile) {
+			font-size: 60px;
+		}
 	}
 }
 
@@ -37,6 +49,10 @@ body {
 	align-items: center;
 	flex-direction: column;
 	gap: 40px;
+
+	@include view(small-mobile) {
+		gap: 20px;
+	}
 }
 
 .board {
@@ -44,6 +60,13 @@ body {
 	grid-template-columns: repeat(3, 100px);
 	grid-template-rows: repeat(3, 100px);
 	gap: 8px;
+
+	@include view(small-mobile) {
+		grid-template-columns: repeat(3, 95px);
+		grid-template-rows: repeat(3, 95px);
+		gap: 9px;
+	}
+
 	&__cell {
 		border-top: 10px solid rgb(165, 71, 71);
 		border-right: 10px solid rgb(241, 136, 136);
@@ -65,6 +88,14 @@ body {
 .togglers {
 	display: flex;
 	flex-direction: column;
+	transform: scale(1);
+	opacity: 1;
+	transition: transform 0.6s ease, opacity 0.3s ease;
+
+	&--inactive {
+		opacity: 0;
+		transform: scale(0);
+	}
 }
 
 .toggler-header {
@@ -75,7 +106,7 @@ body {
 
 .toggler {
 	display: flex;
-	width: 230px;
+	width: 220px;
 	padding: 6px;
 	border-radius: 100px;
 	background-color: rgb(255, 120, 120);
@@ -130,7 +161,7 @@ body {
 	width: 100vw;
 	height: 100vh;
 	background-color: rgba(0, 0, 0, 0.2);
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	display: none;
@@ -144,36 +175,61 @@ body {
 	display: flex;
 	width: 100vw;
 	height: 100vh;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	overflow: hidden;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: center;
-	padding-bottom: 200px;
+	gap: 100px;
+	flex-direction: column;
 	transform: scale(0);
-	transition: transform 0.3s ease;
+	transition: transform 0.6s ease, opacity 0.3s ease;
+	opacity: 0;
+
+	@include view(small-mobile) {
+		gap: 60px;
+	}
 
 	&--active {
 		transform: scale(1);
+		opacity: 1;
+	}
+
+	&__winner {
+		font-size: 76px;
+		border-radius: 30px;
+		box-shadow: 10px 10px rgba(0, 0, 0, 0.1);
+		color: rgb(255, 120, 120);
+		text-shadow: 2px 1px 1px black;
+		padding: 5px 20px;
+		background-color: white;
+
+		@include view(small-mobile) {
+			font-size: 44px;
+		}
 	}
 
 	&__reset {
 		display: block;
-		width: 300px;
-		height: 80px;
+		padding: 15px 30px;
 		font-size: 40px;
+		font-weight: 600;
 		border: none;
-		border-top: 10px solid rgb(160, 160, 160);
-		border-right: 10px solid rgb(231, 231, 231);
+		border-radius: 30px;
 		background-color: rgb(243, 243, 243);
 		box-shadow: 10px 10px rgba(0, 0, 0, 0.1);
+		text-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 		cursor: pointer;
 		transition: background-color 0.3s, text-shadow 0.3s;
 
+		@include view(small-mobile) {
+			font-size: 30px;
+		}
+
 		&:hover {
 			background-color: rgb(226, 226, 226);
-			text-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			text-shadow: none;
 		}
 	}
 }

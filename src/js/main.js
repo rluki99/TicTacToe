@@ -11,9 +11,9 @@ const gameBoard = (() => {
 		return false
 	}
 
-	const isSpotTaken = index => board[index] !== ''
+	const isSpotTaken = (index) => board[index] !== ''
 
-	const isBoardFull = () => board.every(cell => cell !== '')
+	const isBoardFull = () => board.every((cell) => cell !== '')
 
 	return { getBoard, makeMove, isSpotTaken, isBoardFull }
 })()
@@ -25,18 +25,36 @@ const createPlayer = (name, symbol) => {
 	}
 }
 
+let selectedSymbol
+
 const gameController = () => {
 	const player1 = createPlayer('Player 1', 'X')
 	const player2 = createPlayer('Player 2', 'O')
-	let currentPlayer = player1
-	let gameEnded = false
+	const winnerInfo = document.querySelector('.modal__winner')
+	const togglersBox = document.querySelector('.togglers')
+	const symbolTogglerOptions = document.querySelectorAll('.toggler__option--symbol .toggler__option-input')
+	selectedSymbol = document.querySelector('.toggler__option--symbol .toggler__option-input:checked').value
+
+	let currentPlayer
+
+	let gameEnded
 
 	const cells = document.querySelectorAll('.board__cell')
 
-	const startGame = () => {
-		cells.forEach(cell => {
-			cell.textContent = ''
+	symbolTogglerOptions.forEach((option) => {
+		option.addEventListener('change', () => {
+			console.log(option.value)
+			selectedSymbol = option.value
+			startGame()
 		})
+	})
+
+	console.log(selectedSymbol)
+
+	const startGame = () => {
+		console.log(`selected symbol ${selectedSymbol}`)
+		currentPlayer = selectedSymbol === player1.symbol ? player1 : player2
+
 		cells.forEach((cell, index) => {
 			cell.addEventListener('click', () => {
 				if (gameBoard.makeMove(index, currentPlayer.symbol)) {
@@ -53,14 +71,15 @@ const gameController = () => {
 		})
 	}
 
-	const endGame = winner => {
+	const endGame = (winner) => {
 		if (winner) {
-			console.log(`${winner.name} wins!`)
+			winnerInfo.textContent = `Player '${winner.symbol}' wins!`
 		} else {
-			console.log(`It's a tie!`)
+			winnerInfo.textContent = `It's a tie!`
 		}
 		openModal()
 		gameEnded = true
+		togglersBox.classList.remove('togglers--inactive')
 	}
 
 	const checkWinner = () => {
@@ -75,7 +94,7 @@ const gameController = () => {
 			[2, 4, 6], // Przekątne
 		]
 
-		return winningCombos.some(combo => {
+		return winningCombos.some((combo) => {
 			const [a, b, c] = combo
 			return (
 				gameBoard.getBoard()[a] !== '' &&
@@ -91,16 +110,22 @@ const gameController = () => {
 
 	const resetGame = () => {
 		gameBoard.getBoard().fill('')
-		cells.forEach(cell => {
+		cells.forEach((cell) => {
 			cell.textContent = ''
 		})
-		currentPlayer = player1
 		gameEnded = false
+		togglersBox.style.display = 'block'
 		closeModal()
 	}
 
 	const resetButton = document.querySelector('.modal__reset')
 	resetButton.addEventListener('click', resetGame)
+
+	cells.forEach(cell => {
+		cell.addEventListener('click', () => {
+			togglersBox.classList.add('togglers--inactive')
+		})
+	});
 
 	startGame()
 }

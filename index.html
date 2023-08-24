@@ -33,13 +33,13 @@
         <div class="togglers">
             <h2 class="toggler-header">Player VS</h2>
             <div class="toggler">
-                <label class="toggler__option">
+                <label class="toggler__option toggler__option--versus">
                     <input class="toggler__option-input" type="radio" name="versus" value="human" checked>
                     <span class="toggler__option-box">
                         <span class="toggler__option-txt">Player</span>
                     </span>
                 </label>
-                <label class="toggler__option">
+                <label class="toggler__option toggler__option--versus">
                     <input class="toggler__option-input" type="radio" name="versus" value="ai">
                     <span class="toggler__option-box">
                         <span class="toggler__option-txt">AI</span>
@@ -49,13 +49,13 @@
     
             <h2 class="toggler-header">Choose your symbol</h2>
             <div class="toggler">
-                <label class="toggler__option">
+                <label class="toggler__option toggler__option--symbol">
                     <input class="toggler__option-input" type="radio" name="symbol" value="X" checked>
                     <span class="toggler__option-box">
                         <span class="toggler__option-txt">X</span>
                     </span>
                 </label>
-                <label class="toggler__option">
+                <label class="toggler__option toggler__option--symbol">
                     <input class="toggler__option-input" type="radio" name="symbol" value="O">
                     <span class="toggler__option-box">
                         <span class="toggler__option-txt">O</span>
@@ -66,6 +66,7 @@
 
         <div class="modal-overlay"></div>
         <div class="modal">
+            <span class="modal__winner">Player 1 wins!</span>
             <button class="modal__reset">RESET GAME</button>
         </div>
     </main>
