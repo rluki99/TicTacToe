@@ -71,11 +71,16 @@ const gameController = () => {
 			cell.addEventListener('click', () => {
 				if (gameBoard.makeMove(index, currentPlayer.symbol)) {
 					cell.textContent = currentPlayer.symbol
+					console.log(index)
 					if (checkWinner()) {
 						endGame(currentPlayer)
 					} else if (checkTie()) {
 						endGame(null)
 					} else {
+						if (selectedVersus === 'ai' && currentPlayer.symbol !== selectedSymbol) {
+							console.log('ruch AI')
+							console.log(currentPlayer.symbol)
+						}
 						currentPlayer = currentPlayer === player1 ? player2 : player1
 					}
 				}
@@ -128,20 +133,18 @@ const gameController = () => {
 		closeModal()
 	}
 
+	const aiMove = () => {}
+
 	const resetButton = document.querySelector('.modal__reset')
 	resetButton.addEventListener('click', resetGame)
 
-	cells.forEach(cell => {
+	cells.forEach((cell) => {
 		cell.addEventListener('click', () => {
 			togglersBox.classList.add('togglers--inactive')
 		})
-	});
+	})
 
 	startGame()
-}
-
-const aiModule = () => {
-
 }
 
 const modalControler = () => {
