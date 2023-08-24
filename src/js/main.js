@@ -26,18 +26,22 @@ const createPlayer = (name, symbol) => {
 }
 
 let selectedSymbol
+let selectedVersus
 
 const gameController = () => {
 	const player1 = createPlayer('Player 1', 'X')
 	const player2 = createPlayer('Player 2', 'O')
 	const winnerInfo = document.querySelector('.modal__winner')
+
 	const togglersBox = document.querySelector('.togglers')
+
 	const symbolTogglerOptions = document.querySelectorAll('.toggler__option--symbol .toggler__option-input')
 	selectedSymbol = document.querySelector('.toggler__option--symbol .toggler__option-input:checked').value
 
-	let currentPlayer
+	const versusTogglerOptions = document.querySelectorAll('.toggler__option--versus .toggler__option-input')
+	selectedVersus = document.querySelector('.toggler__option--versus .toggler__option-input:checked').value
 
-	let gameEnded
+	let currentPlayer
 
 	const cells = document.querySelectorAll('.board__cell')
 
@@ -45,6 +49,14 @@ const gameController = () => {
 		option.addEventListener('change', () => {
 			console.log(option.value)
 			selectedSymbol = option.value
+			startGame()
+		})
+	})
+
+	versusTogglerOptions.forEach((option) => {
+		option.addEventListener('change', () => {
+			console.log(option.value)
+			selectedVersus = option.value
 			startGame()
 		})
 	})
@@ -78,7 +90,6 @@ const gameController = () => {
 			winnerInfo.textContent = `It's a tie!`
 		}
 		openModal()
-		gameEnded = true
 		togglersBox.classList.remove('togglers--inactive')
 	}
 
@@ -113,7 +124,6 @@ const gameController = () => {
 		cells.forEach((cell) => {
 			cell.textContent = ''
 		})
-		gameEnded = false
 		togglersBox.style.display = 'block'
 		closeModal()
 	}
@@ -128,6 +138,10 @@ const gameController = () => {
 	});
 
 	startGame()
+}
+
+const aiModule = () => {
+
 }
 
 const modalControler = () => {
