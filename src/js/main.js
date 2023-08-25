@@ -11,9 +11,9 @@ const gameBoard = (() => {
 		return false
 	}
 
-	const isSpotTaken = (index) => board[index] !== ''
+	const isSpotTaken = index => board[index] !== ''
 
-	const isBoardFull = () => board.every((cell) => cell !== '')
+	const isBoardFull = () => board.every(cell => cell !== '')
 
 	return { getBoard, makeMove, isSpotTaken, isBoardFull }
 })()
@@ -27,6 +27,8 @@ const createPlayer = (name, symbol) => {
 
 let selectedSymbol
 let selectedVersus
+let playerTurn = true
+let aiTurn = false
 
 const gameController = () => {
 	const player1 = createPlayer('Player 1', 'X')
@@ -45,7 +47,7 @@ const gameController = () => {
 
 	const cells = document.querySelectorAll('.board__cell')
 
-	symbolTogglerOptions.forEach((option) => {
+	symbolTogglerOptions.forEach(option => {
 		option.addEventListener('change', () => {
 			console.log(option.value)
 			selectedSymbol = option.value
@@ -53,7 +55,7 @@ const gameController = () => {
 		})
 	})
 
-	versusTogglerOptions.forEach((option) => {
+	versusTogglerOptions.forEach(option => {
 		option.addEventListener('change', () => {
 			console.log(option.value)
 			selectedVersus = option.value
@@ -67,28 +69,76 @@ const gameController = () => {
 		console.log(`selected symbol ${selectedSymbol}`)
 		currentPlayer = selectedSymbol === player1.symbol ? player1 : player2
 
-		cells.forEach((cell, index) => {
-			cell.addEventListener('click', () => {
-				if (gameBoard.makeMove(index, currentPlayer.symbol)) {
-					cell.textContent = currentPlayer.symbol
-					console.log(index)
-					if (checkWinner()) {
-						endGame(currentPlayer)
-					} else if (checkTie()) {
-						endGame(null)
-					} else {
-						if (selectedVersus === 'ai' && currentPlayer.symbol !== selectedSymbol) {
-							console.log('ruch AI')
-							console.log(currentPlayer.symbol)
-						}
-						currentPlayer = currentPlayer === player1 ? player2 : player1
+		const handleClick = (cell, index) => {
+			if (!playerTurn || aiTurn) {
+				return
+			}
+
+			if (gameBoard.makeMove(index, currentPlayer.symbol)) {
+				if(selectedVersus === 'ai') {
+					playerTurn = false
+				}
+				
+				cell.textContent = currentPlayer.symbol
+				console.log(index)
+				if (checkWinner()) {
+					endGame(currentPlayer)
+				} else if (checkTie()) {
+					endGame(null)
+				} else {
+					currentPlayer = currentPlayer === player1 ? player2 : player1
+					if (selectedVersus === 'ai' && currentPlayer.symbol !== selectedSymbol) {
+						aiMove()
 					}
 				}
+			}
+		}
+
+		cells.forEach((cell, index) => {
+			cell.addEventListener('click', () => {
+				handleClick(cell, index)
 			})
 		})
+
+		if (selectedVersus === 'ai' && currentPlayer.symbol !== selectedSymbol) {
+			aiMove()
+		}
 	}
 
-	const endGame = (winner) => {
+	const aiMove = async () => {
+		aiTurn = true
+		const cellsArray = Array.from(cells) // Tworzymy tablicę z elementów komórek planszy
+		const emptyCells = cellsArray.filter((cell, index) => gameBoard.isSpotTaken(index) === false) // Filtrujemy wolne komórki
+
+		if (emptyCells.length === 0) {
+			return // Nie ma wolnych miejsc, nie ma ruchu AI do wykonania
+		}
+
+		const randomIndex = Math.floor(Math.random() * emptyCells.length) // Losujemy indeks komórki do postawienia symbolu
+		const selectedCell = emptyCells[randomIndex] // Wybieramy losową komórkę
+
+		await delay(500)
+
+		gameBoard.makeMove([...cells].indexOf(selectedCell), currentPlayer.symbol) // Wykonujemy ruch AI w logice gry
+		selectedCell.textContent = currentPlayer.symbol // Wyświetlamy symbol AI w wybranej komórce
+
+		if (checkWinner()) {
+			endGame(currentPlayer)
+		} else if (checkTie()) {
+			endGame(null)
+		} else {
+			currentPlayer = currentPlayer === player1 ? player2 : player1
+		}
+
+		aiTurn = false
+		playerTurn = true
+	}
+
+	const delay = milliseconds => {
+		return new Promise(resolve => setTimeout(resolve, milliseconds))
+	}
+
+	const endGame = winner => {
 		if (winner) {
 			winnerInfo.textContent = `Player '${winner.symbol}' wins!`
 		} else {
@@ -110,7 +160,7 @@ const gameController = () => {
 			[2, 4, 6], // Przekątne
 		]
 
-		return winningCombos.some((combo) => {
+		return winningCombos.some(combo => {
 			const [a, b, c] = combo
 			return (
 				gameBoard.getBoard()[a] !== '' &&
@@ -126,19 +176,19 @@ const gameController = () => {
 
 	const resetGame = () => {
 		gameBoard.getBoard().fill('')
-		cells.forEach((cell) => {
+		cells.forEach(cell => {
 			cell.textContent = ''
 		})
 		togglersBox.style.display = 'block'
+		playerTurn = true
+		aiTurn = false
 		closeModal()
 	}
-
-	const aiMove = () => {}
 
 	const resetButton = document.querySelector('.modal__reset')
 	resetButton.addEventListener('click', resetGame)
 
-	cells.forEach((cell) => {
+	cells.forEach(cell => {
 		cell.addEventListener('click', () => {
 			togglersBox.classList.add('togglers--inactive')
 		})
