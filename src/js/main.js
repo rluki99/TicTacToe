@@ -25,62 +25,46 @@ const createPlayer = (name, symbol) => {
 	}
 }
 
-let selectedSymbol
-let selectedVersus
-let playerTurn = true
-let aiTurn = false
-
 const gameController = () => {
+	let selectedSymbol = document.querySelector('.toggler__option--symbol .toggler__option-input:checked').value
+	let selectedVersus = document.querySelector('.toggler__option--versus .toggler__option-input:checked').value
+	let aiTurn = false
+
 	const player1 = createPlayer('Player 1', 'X')
 	const player2 = createPlayer('Player 2', 'O')
+	let currentPlayer = player1
+
 	const winnerInfo = document.querySelector('.modal__winner')
-
 	const togglersBox = document.querySelector('.togglers')
-
 	const symbolTogglerOptions = document.querySelectorAll('.toggler__option--symbol .toggler__option-input')
-	selectedSymbol = document.querySelector('.toggler__option--symbol .toggler__option-input:checked').value
-
 	const versusTogglerOptions = document.querySelectorAll('.toggler__option--versus .toggler__option-input')
-	selectedVersus = document.querySelector('.toggler__option--versus .toggler__option-input:checked').value
-
-	let currentPlayer
-
 	const cells = document.querySelectorAll('.board__cell')
+	const resetButton = document.querySelector('.modal__reset')
 
 	symbolTogglerOptions.forEach(option => {
-		option.addEventListener('change', () => {
-			console.log(option.value)
-			selectedSymbol = option.value
-			startGame()
-		})
-	})
+	  option.addEventListener('change', () => {
+		selectedSymbol = option.value;
+		startGame();
+	  });
+	});
 
 	versusTogglerOptions.forEach(option => {
-		option.addEventListener('change', () => {
-			console.log(option.value)
-			selectedVersus = option.value
-			startGame()
-		})
-	})
-
-	console.log(selectedSymbol)
+	  option.addEventListener('change', () => {
+		selectedVersus = option.value;
+		startGame();
+	  });
+	});	
 
 	const startGame = () => {
-		console.log(`selected symbol ${selectedSymbol}`)
 		currentPlayer = selectedSymbol === player1.symbol ? player1 : player2
 
 		const handleClick = (cell, index) => {
-			if (!playerTurn || aiTurn) {
+			if (aiTurn) {
 				return
 			}
 
 			if (gameBoard.makeMove(index, currentPlayer.symbol)) {
-				if(selectedVersus === 'ai') {
-					playerTurn = false
-				}
-				
 				cell.textContent = currentPlayer.symbol
-				console.log(index)
 				if (checkWinner()) {
 					endGame(currentPlayer)
 				} else if (checkTie()) {
@@ -99,28 +83,24 @@ const gameController = () => {
 				handleClick(cell, index)
 			})
 		})
-
-		if (selectedVersus === 'ai' && currentPlayer.symbol !== selectedSymbol) {
-			aiMove()
-		}
 	}
 
 	const aiMove = async () => {
 		aiTurn = true
-		const cellsArray = Array.from(cells) // Tworzymy tablicę z elementów komórek planszy
-		const emptyCells = cellsArray.filter((cell, index) => gameBoard.isSpotTaken(index) === false) // Filtrujemy wolne komórki
+		const cellsArray = Array.from(cells)
+		const emptyCells = cellsArray.filter((cell, index) => gameBoard.isSpotTaken(index) === false)
 
 		if (emptyCells.length === 0) {
-			return // Nie ma wolnych miejsc, nie ma ruchu AI do wykonania
+			return
 		}
 
-		const randomIndex = Math.floor(Math.random() * emptyCells.length) // Losujemy indeks komórki do postawienia symbolu
-		const selectedCell = emptyCells[randomIndex] // Wybieramy losową komórkę
+		const randomIndex = Math.floor(Math.random() * emptyCells.length)
+		const selectedCell = emptyCells[randomIndex]
 
 		await delay(500)
 
-		gameBoard.makeMove([...cells].indexOf(selectedCell), currentPlayer.symbol) // Wykonujemy ruch AI w logice gry
-		selectedCell.textContent = currentPlayer.symbol // Wyświetlamy symbol AI w wybranej komórce
+		gameBoard.makeMove([...cells].indexOf(selectedCell), currentPlayer.symbol)
+		selectedCell.textContent = currentPlayer.symbol
 
 		if (checkWinner()) {
 			endGame(currentPlayer)
@@ -131,7 +111,6 @@ const gameController = () => {
 		}
 
 		aiTurn = false
-		playerTurn = true
 	}
 
 	const delay = milliseconds => {
@@ -152,12 +131,12 @@ const gameController = () => {
 		const winningCombos = [
 			[0, 1, 2],
 			[3, 4, 5],
-			[6, 7, 8], // Wiersze
+			[6, 7, 8], // rows
 			[0, 3, 6],
 			[1, 4, 7],
-			[2, 5, 8], // Kolumny
+			[2, 5, 8], // columns
 			[0, 4, 8],
-			[2, 4, 6], // Przekątne
+			[2, 4, 6], // diagonals
 		]
 
 		return winningCombos.some(combo => {
@@ -180,12 +159,11 @@ const gameController = () => {
 			cell.textContent = ''
 		})
 		togglersBox.style.display = 'block'
-		playerTurn = true
+		currentPlayer = selectedSymbol === player1.symbol ? player1 : player2
 		aiTurn = false
 		closeModal()
 	}
 
-	const resetButton = document.querySelector('.modal__reset')
 	resetButton.addEventListener('click', resetGame)
 
 	cells.forEach(cell => {
